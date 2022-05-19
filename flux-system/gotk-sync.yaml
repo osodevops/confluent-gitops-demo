@@ -29,17 +29,17 @@ spec:
       namespace: confluent
   validation: client
 ---
-#apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
-#kind: Kustomization
-#metadata:
-#  name: environments
-#  namespace: flux-system
-#spec:
-#  dependsOn:
-#    - name: confluent-infra
-#  interval: 5m
-#  path: ./kustomize/environments
-#  prune: true
-#  sourceRef:
-#    kind: GitRepository
-#    name: flux-system
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: environments
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: confluent-infra
+  interval: 5m
+  path: ./kustomize/environments/sandbox
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
