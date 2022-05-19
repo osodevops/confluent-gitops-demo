@@ -10,7 +10,7 @@ spec:
     branch: main
   url: https://github.com/osodevops/confluent-gitops-demo.git
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
   name: confluent-infra
@@ -29,7 +29,7 @@ spec:
       namespace: confluent
   validation: client
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
   name: environments
