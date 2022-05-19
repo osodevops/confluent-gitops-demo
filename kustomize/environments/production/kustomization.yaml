@@ -4,5 +4,6 @@ namespace: production
 resources:
   - namespace.yaml
   - ../../base
+  - ../../base/confluent/schmea-registry
   - ../../base/confluent/connect
   - ../../base/confluent/control-centre.yaml
