@@ -6,4 +6,5 @@ resources:
   - ../../base
   - ../../base/confluent/schmea-registry
 patchesStrategicMerge:
+  - zookeeper.yaml
   - kafka.yaml
