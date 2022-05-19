@@ -10,7 +10,7 @@ spec:
   approvePlan: "auto"
   vars:
     - name: environment_name
-      value: test
+      value: oso
   varsFrom:
     - kind: Secret
       name: tf-confluent-keys
