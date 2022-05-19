@@ -8,6 +8,9 @@ spec:
   interval: 1m
   path: ./terraform/
   approvePlan: "auto"
+  vars:
+    - name: environment_name
+      value: oso
   varsFrom:
     - kind: Secret
       name: confluent-keys
