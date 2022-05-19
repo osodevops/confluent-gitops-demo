@@ -1,0 +1,38 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: confluentinc
+  namespace: flux-system
+spec:
+  url: https://packages.confluent.io/helm
+  interval: 1m
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: confluent
+  namespace: confluent
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: confluent-for-kubernetes
+      sourceRef:
+        name: confluentinc
+        kind: HelmRepository
+        namespace: flux-system
+  upgrade:
+    timeout: 30s
+    remediation:
+      retries: 3
+      strategy: rollback
+    cleanupOnFail: true
+  rollback:
+    timeout: 1m
+    force: true
+    cleanupOnFail: true
+  values:
+    namespaced: false
+    image:
+      registry: docker.io
+    name: confluent-operator-global
