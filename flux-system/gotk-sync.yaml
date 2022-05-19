@@ -10,7 +10,7 @@ spec:
     branch: main
   url: https://github.com/osodevops/confluent-gitops-demo.git
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
   name: confluent-infra
@@ -30,7 +30,7 @@ spec:
   validation: client
 ---
 # SANDBOX ENVIRONMENT
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
   name: sandbox
@@ -46,7 +46,7 @@ spec:
     name: flux-system
 ---
 # PRODUCTION ENVIRONMENT
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
   name: production
@@ -60,3 +60,23 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+---
+#TERRAFORM CONTROLLER
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: terraform-controller
+  namespace: flux-system
+spec:
+  interval: 1m
+  path: ./kustomize/tf-controller
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: tf-controller
+      namespace: flux-system
+  validation: client
