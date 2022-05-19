@@ -5,3 +5,5 @@ resources:
   - namespace.yaml
   - ../../base
   - ../../base/confluent/schmea-registry
+patchesStrategicMerge:
+  - kafka.yaml
