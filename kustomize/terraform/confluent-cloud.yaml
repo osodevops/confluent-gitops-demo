@@ -13,7 +13,7 @@ spec:
       value: oso
   varsFrom:
     - kind: Secret
-      name: confluent-keys
+      name: tf-confluent-keys
   sourceRef:
     kind: GitRepository
     name: flux-system
