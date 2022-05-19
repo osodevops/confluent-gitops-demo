@@ -5,6 +5,10 @@ metadata:
   name: controlcenter
 spec:
   replicas: 1
+  configOverrides:
+    server:
+      - confluent.controlcenter.kafka.production.bootstrap.servers=kafka.production.svc.cluster.local:9071
+      - confluent.controlcenter.kafka.sandbox.bootstrap.servers=kafka.sandbox.svc.cluster.local:9071
   podTemplate:
     probe:
       liveness:

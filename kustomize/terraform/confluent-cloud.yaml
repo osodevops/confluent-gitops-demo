@@ -1,0 +1,14 @@
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha1
+kind: Terraform
+metadata:
+  name: tf-controller-confluent-cloud
+  namespace: flux-system
+spec:
+  interval: 1m
+  path: ./terraform/
+  approvePlan: "auto"
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system

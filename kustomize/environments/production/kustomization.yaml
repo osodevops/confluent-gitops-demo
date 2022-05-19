@@ -6,4 +6,4 @@ resources:
   - ../../base
   - ../../base/confluent/schmea-registry
   - ../../base/confluent/connect
-  - ../../base/confluent/control-centre.yaml
+  - ../../base/confluent/control-centre
