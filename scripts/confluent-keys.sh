@@ -9,5 +9,5 @@ fi
 
 kubectl create secret generic tf-confluent-keys \
     -n flux-system \
-    --from-literal=access_key=$CONFLUENT_API_KEY \
-    --from-literal=secret_key=$CONFLUENT_API_SECRET
+    --from-literal=confluent_cloud_api_key=$CONFLUENT_API_KEY \
+    --from-literal=confluent_cloud_api_secret=$CONFLUENT_API_SECRET
