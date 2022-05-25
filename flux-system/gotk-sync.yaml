@@ -29,55 +29,71 @@ spec:
       name: confluent
       namespace: confluent
   validation: client
-#---
-## PRODUCTION ENVIRONMENT
-#apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-#kind: Kustomization
-#metadata:
-#  name: production
-#  namespace: flux-system
-#spec:
-#  dependsOn:
-#    - name: confluent-infra
-#  interval: 1m
-#  path: ./kustomize/environments/production
-#  prune: true
-#  sourceRef:
-#    kind: GitRepository
-#    name: flux-system
-#---
-## SANDBOX ENVIRONMENT
-#apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-#kind: Kustomization
-#metadata:
-#  name: sandbox
-#  namespace: flux-system
-#spec:
-#  dependsOn:
-#    - name: confluent-infra
-#  interval: 1m
-#  path: ./kustomize/environments/sandbox
-#  prune: true
-#  sourceRef:
-#    kind: GitRepository
-#    name: flux-system
-#---
-##TERRAFORM CONTROLLER
-#apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-#kind: Kustomization
-#metadata:
-#  name: terraform-controller
-#  namespace: flux-system
-#spec:
-#  interval: 1m
-#  path: ./kustomize/tf-controller
-#  prune: true
-#  sourceRef:
-#    kind: GitRepository
-#    name: flux-system
-#  healthChecks:
-#    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
-#      kind: HelmRelease
-#      name: tf-controller
-#      namespace: flux-system
-#  validation: client
+---
+### PRODUCTION ENVIRONMENT
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: production
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: confluent-infra
+  interval: 1m
+  path: ./kustomize/environments/production
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+---
+### SANDBOX ENVIRONMENT
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: sandbox
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: confluent-infra
+  interval: 1m
+  path: ./kustomize/environments/sandbox
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+---
+### TERRAFORM CONTROLLER
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: terraform-controller
+  namespace: flux-system
+spec:
+  interval: 1m
+  path: ./kustomize/tf-controller
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: tf-controller
+      namespace: flux-system
+  validation: client
+---
+### CONFLUENT CLOUD TERRAFORM
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: confluent-cloud
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: terraform-controller
+  interval: 1m
+  path: ./kustomize/terraform
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
