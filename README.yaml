@@ -9,14 +9,22 @@ name: "Confluent GitOps Demo"
 
 # Short description of this project
 description: |-
-  Fully automated Confluent Platform Demo which deploys Kafka in multiple namespaces and uses the TF Controller with Confluent Terraform Provider to provision Confluent Cloud resources.
+  Fully automated Confluent Platform Demo which deploys Kafka in multiple namespaces and uses the TF Controller with Confluent Terraform Provider to provision Confluent Cloud resources. Acompanying slides can be found [here](https://www.slideshare.net/SionSmith1/oso-confluent-gitops-demo)
 
 # Canonical GitHub repo
 github_repo: osodevops/confluent-gitops-demo
 
 # How to use this project
 usage: |-
+  Many teams are already using GitOps for application deployments and now we’ll show you how you can take GitOps even further by bootstrapping whole Confluent Platform include Confluent Cloud resources straight from a Git repository. In this demo we are using Flux, Kustomize and Helm to install and manage the [Confluent Operator for Kubernetes](https://docs.confluent.io/operator/current/overview.html)  
   
+  We will configure [Flux](https://fluxcd.io/) to install, deploy and config the [Confluent Platform](https://www.confluent.io/product/confluent-platform) using their `HelmRepository` and `HelmRelease` custom resources. With the Confluent Operator monitoring all namespaces in the cluster, we will then allow Flux to create two clusters, in separate namespaces. Production and Sandbox, each having a slightly different configuration and number of brokers to demonstrate the ability to easily override the base configuration. 
+  
+  Everyone can now easily spin up their clusters in 3 simple steps: **fork**, **clone**, and **run**
+  1. Fork: fork this Git repository so that you can work on it from your GitHub user account. Here’s the base repository https://github.com/osodevops/confluent-gitops-demo you can fork from.
+  2. Clone: do git clone to download your forked repository onto your machine. 
+  3. Run: follow the instructions below to run and start your Kafka clusters.
+
   The Toolkit components consist of Source Controller, Kustomize Controller, Helm Controller, Notification Controller and the Image Automation Controllers.
   ```
   ├── flux-system
@@ -46,17 +54,26 @@ usage: |-
 
 # Example usage
 examples: |-
-  ### Deployment Process
+  ### How to deploy this demo
   #### 1. Create your Kubernetes cluster
+  Fork this repository into your own GitHub account.
+  
+  #### 2. Create your Kubernetes cluster
   We will be using MiniKube, but any remote cluster will work. Create the cluster using: 
   * Run `minikube start --cpus=6 --memory=20019 --kubernetes-version=v1.21.0`
   
-  #### 2. Deploy the GitOps toolkit
+  #### 3. Deploy the GitOps toolkit
   Toolkit CRDs and components are deployed using: 
   * Navigate to `./flux-system`
   * Run `kubectl apply -f gotk-components.yaml`
 
-  #### 3. Deploy Flux Sync
+  #### 4. Create Confluent Cloud Credentials
+  Navigate to [Confluent Cloud API page](https://confluent.cloud/settings/api-keys) and generate a new set of API keys. Copy these and head over to your terminal to run:
+  * `export CONFLUENT_API_KEY=REPLACE_ME && export CONFLUENT_API_SECRET=REPLACE_ME
+  * run ./scripts/confluent-keys.sh
+  This will create a secret containing your keys which the Flux system can access when running Terraform via the TF Controller.
+  
+  #### 5. Deploy Flux Sync
   * Navigate to `./flux-system`
   * run `kubectl apply -f gotk-sync.yaml`
   This next step will tell Flux what repository to monitor, and, within that repository, what kustomization files to start with. The first Kustomize resource that Flux will look for to is located at `./kustomize/operator`.  This will install the confluent-for-kubernetes Helm chart which will monitor all namespaces for Confluent CRDs.   
@@ -75,7 +92,7 @@ examples: |-
     kustomization.kustomize.toolkit.fluxcd.io/confluent-cloud created
     ```
   
-  #### 4. Let Flux work its magic
+  #### 6. Let Flux work its magic
   Now that we have flux monitoring the forked Git repository, let's demonstrate the GitOps behaviour!  If everything has deployed successfully, you should see a healthy confluent stack looking like this:
     ```console
   │ NAMESPACE           NAME                                                  PF         READY                   RESTARTS STATUS             IP                     NODE               AGE             │
@@ -87,17 +104,17 @@ examples: |-
   │ flux-system         notification-controller-b55cbcf9c-jb8rh               ●          1/1                            0 Running           172.17.0.7             minikube           7m43s            │
   │ flux-system         source-controller-6b6c7bc4bb-n29zd                    ●          1/1                            0 Running           172.17.0.9             minikube           7m43s            │
   │ flux-system         tf-controller-f65f5f4f5-vnrbl                         ●          1/1                            0 Running           172.17.0.10            minikube           6m42s            │
-  │ production          connect-0                                             ●          0/1                            0 Running           172.17.0.17            minikube           5m48s            │
-  │ production          controlcenter-0                                       ●          0/1                            0 Running           172.17.0.13            minikube           5m49s            │
-  │ production          kafka-0                                               ●          0/1                            0 Running           172.17.0.15            minikube           5m47s            │
-  │ production          kafka-1                                               ●          0/1                            0 Running           172.17.0.22            minikube           5m47s            │
-  │ production          kafka-2                                               ●          0/1                            0 Running           172.17.0.21            minikube           5m47s            │
-  │ production          schemaregistry-0                                      ●          0/1                            0 Running           172.17.0.16            minikube           5m48s            │
-  │ production          zookeeper-0                                           ●          0/1                            0 Running           172.17.0.20            minikube           5m47s            │
-  │ production          zookeeper-1                                           ●          0/1                            0 Running           172.17.0.19            minikube           5m47s            │
-  │ production          zookeeper-2                                           ●          0/1                            0 Running           172.17.0.18            minikube           5m47s            │
-  │ sandbox             kafka-0                                               ●          0/1                            0 Running           172.17.0.12            minikube           5m49s            │
-  │ sandbox             zookeeper-0                                           ●          0/1                            0 Running           172.17.0.14            minikube           5m48s            │
+  │ production          connect-0                                             ●          1/1                            0 Running           172.17.0.17            minikube           5m48s            │
+  │ production          controlcenter-0                                       ●          1/1                            0 Running           172.17.0.13            minikube           5m49s            │
+  │ production          kafka-0                                               ●          1/1                            0 Running           172.17.0.15            minikube           5m47s            │
+  │ production          kafka-1                                               ●          1/1                            0 Running           172.17.0.22            minikube           5m47s            │
+  │ production          kafka-2                                               ●          1/1                            0 Running           172.17.0.21            minikube           5m47s            │
+  │ production          schemaregistry-0                                      ●          1/1                            0 Running           172.17.0.16            minikube           5m48s            │
+  │ production          zookeeper-0                                           ●          1/1                            0 Running           172.17.0.20            minikube           5m47s            │
+  │ production          zookeeper-1                                           ●          1/1                            0 Running           172.17.0.19            minikube           5m47s            │
+  │ production          zookeeper-2                                           ●          1/1                            0 Running           172.17.0.18            minikube           5m47s            │
+  │ sandbox             kafka-0                                               ●          1/1                            0 Running           172.17.0.12            minikube           5m49s            │
+  │ sandbox             zookeeper-0                                           ●          1/1                            0 Running           172.17.0.14            minikube           5m48s            │
     ```
 
 related:
