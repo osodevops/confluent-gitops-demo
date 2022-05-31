@@ -47,46 +47,21 @@ The Toolkit components consist of Source Controller, Kustomize Controller, Helm 
 │   ├── base
 │   │   ├── confluent
 │   │   │   ├── connect
-│   │   │   │   ├── kafka-connect.yaml
-│   │   │   │   └── kustomization.yaml
 │   │   │   ├── control-centre
-│   │   │   │   ├── control-centre.yaml
-│   │   │   │   └── kustomization.yaml
 │   │   │   ├── kafka.yaml
 │   │   │   ├── ksqldb
-│   │   │   │   ├── ksqldb.yaml
-│   │   │   │   └── kustomization.yaml
 │   │   │   ├── kustomization.yaml
 │   │   │   ├── schmea-registry
-│   │   │   │   ├── kustomization.yaml
-│   │   │   │   └── schema-registry.yaml
 │   │   │   ├── secrets
-│   │   │   │   ├── ca-pair-sslcerts.yaml
-│   │   │   │   ├── kustomization.yaml
-│   │   │   │   └── mds-public.yaml
 │   │   │   └── zookeeper.yaml
 │   │   └── kustomization.yaml
 │   ├── environments
 │   │   ├── kustomization.yaml
 │   │   ├── production
-│   │   │   ├── kustomization.yaml
-│   │   │   └── namespace.yaml
 │   │   └── sandbox
-│   │       ├── kafka.yaml
-│   │       ├── kustomization.yaml
-│   │       ├── namespace.yaml
-│   │       └── zookeeper.yaml
 │   ├── operator
-│   │   ├── confluent-operator-helm-release-confluent.yaml
-│   │   ├── kustomization.yaml
-│   │   └── namespace.yaml
 │   ├── terraform
-│   │   ├── confluent-cloud.yaml
-│   │   ├── kustomization.yaml
-│   │   └── namespace.yaml
 │   └── tf-controller
-│       ├── kustomization.yaml
-│       └── terraform-controller-helm-release.yaml
 ```
 
 
@@ -113,23 +88,39 @@ After a successful health check of the operator (which will run as a pod), Flux 
   * Sandbox environment located at  `./kustomize/environments/sandbox`
   * TF Controller for reconciling Terraform resources in the GitOps way located at `./kustomize/environments/tf-controller`
   * Auto Apply Terraform using the variables located at `./kustomize/environments/terraform`
-  
+You should see the following output:
+  ```console
+  gitrepository.source.toolkit.fluxcd.io/flux-system created
+  kustomization.kustomize.toolkit.fluxcd.io/confluent-infra created
+  kustomization.kustomize.toolkit.fluxcd.io/production created
+  kustomization.kustomize.toolkit.fluxcd.io/sandbox created
+  kustomization.kustomize.toolkit.fluxcd.io/terraform-controller created
+  kustomization.kustomize.toolkit.fluxcd.io/confluent-cloud created
+  ```
+
 #### 4. Let Flux work its magic
 Now that we have flux monitoring the forked Git repository, let's demonstrate the GitOps behaviour!  If everything has deployed successfully, you should see a healthy confluent stack looking like this:
   ```console
-  │ NAME                                          PF   READY      RESTARTS STATUS      IP              NODE         AGE        │
-  │ confluent-operator-global-7ffc5b469d-knmfj    ●    1/1               0 Running     172.17.0.7      minikube     21m        │
-  │ connect-0                                     ●    1/1               0 Running     172.17.0.17     minikube     9m31s      │
-  │ controlcenter-0                               ●    1/1               1 Running     172.17.0.11     minikube     21m        │
-  │ kafka-0                                       ●    1/1               3 Running     172.17.0.8      minikube     21m        │
-  │ kafka-1                                       ●    1/1               3 Running     172.17.0.10     minikube     21m        │
-  │ kafka-2                                       ●    1/1               3 Running     172.17.0.9      minikube     21m        │
-  │ ksqldb-0                                      ●    1/1               1 Running     172.17.0.12     minikube     21m        │
-  │ schemaregistry-0                              ●    1/1               1 Running     172.17.0.14     minikube     21m        │
-  │ zookeeper-0                                   ●    1/1               0 Running     172.17.0.15     minikube     21m        │
-  │ zookeeper-1                                   ●    1/1               0 Running     172.17.0.16     minikube     21m        │
-  │ zookeeper-2                                   ●    1/1               0 Running     172.17.0.13     minikube     21m        │
-  │
+│ NAMESPACE           NAME                                                  PF         READY                   RESTARTS STATUS             IP                     NODE               AGE             │
+│ confluent           confluent-operator-global-5fb8c9d5f8-82tqm            ●          1/1                            0 Running           172.17.0.11            minikube           6m39s            │
+│ flux-system         helm-controller-544df4db67-5ghcd                      ●          1/1                            0 Running           172.17.0.6             minikube           7m43s            │
+│ flux-system         image-automation-controller-675bff6646-m8s5x          ●          1/1                            0 Running           172.17.0.4             minikube           7m43s            │
+│ flux-system         image-reflector-controller-6bcddcfb44-dh4bv           ●          1/1                            0 Running           172.17.0.8             minikube           7m43s            │
+│ flux-system         kustomize-controller-5b5bb9d49b-mh76j                 ●          1/1                            0 Running           172.17.0.5             minikube           7m43s            │
+│ flux-system         notification-controller-b55cbcf9c-jb8rh               ●          1/1                            0 Running           172.17.0.7             minikube           7m43s            │
+│ flux-system         source-controller-6b6c7bc4bb-n29zd                    ●          1/1                            0 Running           172.17.0.9             minikube           7m43s            │
+│ flux-system         tf-controller-f65f5f4f5-vnrbl                         ●          1/1                            0 Running           172.17.0.10            minikube           6m42s            │
+│ production          connect-0                                             ●          0/1                            0 Running           172.17.0.17            minikube           5m48s            │
+│ production          controlcenter-0                                       ●          0/1                            0 Running           172.17.0.13            minikube           5m49s            │
+│ production          kafka-0                                               ●          0/1                            0 Running           172.17.0.15            minikube           5m47s            │
+│ production          kafka-1                                               ●          0/1                            0 Running           172.17.0.22            minikube           5m47s            │
+│ production          kafka-2                                               ●          0/1                            0 Running           172.17.0.21            minikube           5m47s            │
+│ production          schemaregistry-0                                      ●          0/1                            0 Running           172.17.0.16            minikube           5m48s            │
+│ production          zookeeper-0                                           ●          0/1                            0 Running           172.17.0.20            minikube           5m47s            │
+│ production          zookeeper-1                                           ●          0/1                            0 Running           172.17.0.19            minikube           5m47s            │
+│ production          zookeeper-2                                           ●          0/1                            0 Running           172.17.0.18            minikube           5m47s            │
+│ sandbox             kafka-0                                               ●          0/1                            0 Running           172.17.0.12            minikube           5m49s            │
+│ sandbox             zookeeper-0                                           ●          0/1                            0 Running           172.17.0.14            minikube           5m48s            │
   ```
 
 
