@@ -25,7 +25,15 @@
 
 
 -->
-Fully automated Confluent Platform Demo which deploys Kafka in multiple namespaces and uses the TF Controller with Confluent Terraform Provider to provision Confluent Cloud resources. Acompanying slides can be found [here](https://www.slideshare.net/SionSmith1/oso-confluent-gitops-demo)
+Fully automated Confluent Platform Demo which deploys Kafka in multiple namespaces and uses the TF Controller with Confluent Terraform Provider to provision Confluent Cloud resources. Acompanying slides can be found [here](https://www.slideshare.net/SionSmith1/oso-confluent-gitops-demo) The Demo will cover:
+1. Minikube overview
+2. Deploy GitOps toolkit
+3. How to Install the Confluent Operator (CFK)
+4. Connect GitOps Source Controller to GitHub repo
+5. Deploy production kafka cluster via Flux
+6. Deploy sandbox kafka cluster
+7. How to Deploy Terraform Controller
+8. Run Terraform to provision Confluent Cloud
 
 ---
 
